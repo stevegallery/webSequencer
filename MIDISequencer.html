@@ -1,0 +1,604 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>MIDI Sequencer</title>
+	<style>
+		#playButton {
+			margin-bottom: 10px;
+		}
+	</style>
+</head>
+
+<body>
+	<label for="tempoInput">Tempo (BPM):</label>
+	<input type="number" id="tempoInput" min="1" value="240" onchange="updateOpts()"><br>
+
+	<label for="instrumentSelect">Instrument:</label>
+	<select id="instrumentSelect" onchange="updateOpts()"></select><br>
+
+	<label for="notesInput">Number of Notes:</label>
+	<input type="number" id="notesInput" min="1" value="8" onchange="updateOpts()"><br>
+
+	<label for="keySelect">Key:</label>
+	<select id="keySelect" onchange="updateOpts()">
+    <option value="C">C</option>
+    <option value="C#">C#</option>
+    <option value="D">D</option>
+    <option value="D#">D#</option>
+    <option value="E">E</option>
+    <option value="F">F</option>
+    <option value="F#">F#</option>
+    <option value="G">G</option>
+    <option value="G#">G#</option>
+    <option value="A">A</option>
+    <option value="A#">A#</option>
+    <option value="B">B</option>
+    <!-- Add options for other keys as needed -->
+  </select>
+	<br>
+	<label for="octaveLSelect">Octave range:</label>
+	<select id="octaveLSelect" onchange="updateOpts()">
+    <option value="0">0</option>
+    <option value="1">1</option>
+    <option selected value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+  </select>
+	<label for="octaveHSelect">through</label>
+	<select id="octaveHSelect" onchange="updateOpts()">
+    <option value="0">0</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option selected value="5">5</option>
+  </select>
+	<br>
+
+
+
+	<label for="harmonySelect">Add relative note:</label>
+	<select id="harmonySelect" onchange="updateOpts()">
+    <option value="0">None</option>
+    <option value="1">+1</option>
+    <option value="2">+2</option>
+    <option value="3">+3</option>
+    <option value="4">+4</option>
+    <option value="5">+5</option>
+    <option value="6">+6</option>
+    <option value="7">+7 (octave)</option>
+    <option value="-1">-1</option>
+    <option value="-2">-2</option>
+    <option value="-3">-3</option>
+    <option value="-4">-4</option>
+    <option value="-5">-5</option>
+    <option value="-6">-6</option>
+    <option value="-7">-7 (octave)</option>
+  </select><br>
+
+	<label for="drum1Select">Drum 1:</label>
+	<select id="drum1Select" onchange="updateOpts()"></select>
+	<label for="drum1beat">beat:</label>
+	<select id="drum1beat" onchange="updateOpts()">
+    <option value="0">None</option>
+    <option value="1">every beat</option>
+    <option value="2">even beats</option>
+    <option value="3">odd beats</option>
+    <option value="4">every 4th beat</option>
+    <option value="half">halfway through</option>
+    <option value="end">at the end of the sequence</option>
+  </select><br>
+
+	<label for="drum2Select">Drum 2:</label>
+	<select id="drum2Select" onchange="updateOpts()"></select>
+	<label for="drum2beat">beat:</label>
+	<select id="drum2beat" onchange="updateOpts()">
+    <option value="0">None</option>
+    <option value="1">every beat</option>
+    <option value="2">even beats</option>
+    <option value="3">odd beats</option>
+    <option value="4">every 4th beat</option>
+        <option value="half">halfway through</option>
+    <option value="end">at the end of the sequence</option>
+  </select><br>
+
+
+	<label for="drum3Select">Drum 3:</label>
+	<select id="drum3Select" onchange="updateOpts()"></select>
+	<label for="drum3beat">beat:</label>
+	<select id="drum3beat" onchange="updateOpts()">
+    <option value="0">None</option>
+    <option value="1">every beat</option>
+    <option value="2">even beats</option>
+    <option value="3">odd beats</option>
+    <option value="4">every 4th beat</option>
+        <option value="half">halfway through</option>
+    <option value="end">at the end of the sequence</option>
+  </select><br>
+
+	<label for="volumeInput">Volume:</label>
+	<input type="number" id="volumeInput" min="1" max="127" value="63" onchange="updateOpts()"><br>
+
+	<br>
+	<button id="playButton" onclick="playNotes()">Play</button>
+	<button id="stopButton" onclick="stop()">Stop</button>
+	<br>
+	<h2 id="noteDisplay"></h2>
+	<hr>
+
+	<div id="status"></div>
+
+	<script>
+		// options
+    let scale = []; // Updated based on the selected key
+    tempo =0;
+    noteDuration = 0;
+    instrumentValue = 0;
+    numNotes = 0;
+    harmonyValue =0;
+    octaveLValue =0;
+    octaveHValue =0;
+    drum1Value = 0;      
+    drum2Value =0;  
+    drum1beat=0;
+    drum2beat=0;
+    volume=0;
+       
+
+    let seq = []; 
+    let seqOct = []; 
+
+    let stopped=false;
+
+    // Get a random note from the scale
+    function getRandomNote() {
+      const randomIndex = Math.floor(Math.random() * scale.length);
+      return randomIndex;
+    }
+
+
+
+    function getRandomOctave() {
+      const randomOct = Math.floor(Math.random() * (octaveHValue-octaveLValue+1)) + parseInt(octaveLValue);
+      return randomOct;
+    }
+
+    // Get the harmony note for a given interval
+    function getHarmonyNote(noteIndex, interval) {
+	    let h=Number(noteIndex) + Number(interval);
+	    if (h>=scale.length) {
+        h -= scale.length;
+      }
+      if (h<0) {
+        h += scale.length;
+      }
+      return scale[h];	  
+    }
+
+    // Populate instrument options with instrument names
+    function populateInstrumentOptions() {
+      const instrumentSelect = document.getElementById('instrumentSelect');
+
+      // General MIDI (GM) instrument names
+      const instrumentNames = [
+        'Acoustic Grand Piano', 'Bright Acoustic Piano', 'Electric Grand Piano', 'Honky-tonk Piano',
+        'Electric Piano 1', 'Electric Piano 2', 'Harpsichord', 'Clavi',
+        'Celesta', 'Glockenspiel', 'Music Box', 'Vibraphone',
+        '*Marimba', 'Xylophone', 'Tubular Bells', 'Dulcimer',
+        '*Drawbar Organ', '*Percussive Organ', 'Rock Organ', 'Church Organ',
+        'Reed Organ', 'Accordion', 'Harmonica', 'Tango Accordion',
+        'Acoustic Guitar (nylon)', 'Acoustic Guitar (steel)', 'Electric Guitar (jazz)', 'Electric Guitar (clean)',
+        '*Electric Guitar (muted)', 'Overdriven Guitar', 'Distortion Guitar', 'Guitar Harmonics',
+        'Acoustic Bass', 'Electric Bass (finger)', 'Electric Bass (pick)', 'Fretless Bass',
+        'Slap Bass 1', 'Slap Bass 2', 'Synth Bass 1', 'Synth Bass 2',
+        'Violin', 'Viola', 'Cello', 'Contrabass',
+        'Tremolo Strings', '*Pizzicato Strings', 'Orchestral Harp', 'Timpani',
+        '*String Ensemble 1', '*String Ensemble 2', '*Synth Strings 1', '*Synth Strings 2',
+        'Choir Aahs', 'Voice Oohs', '*Synth Choir', 'Orchestra Hit',
+        'Trumpet', 'Trombone', 'Tuba', 'Muted Trumpet',
+        'French Horn', 'Brass Section', 'Synth Brass 1', 'Synth Brass 2',
+        'Soprano Sax', 'Alto Sax', 'Tenor Sax', 'Baritone Sax',
+        'Oboe', 'English Horn', 'Bassoon', 'Clarinet',
+        'Piccolo', '*Flute', 'Recorder', 'Pan Flute',
+        'Blown Bottle', 'Shakuhachi', 'Whistle', '*Ocarina',
+        '*Lead 1 (square)', 'Lead 2 (sawtooth)', 'Lead 3 (calliope)', 'Lead 4 (chiff)',
+        'Lead 5 (charang)', 'Lead 6 (voice)', 'Lead 7 (fifths)', '*Lead 8 (bass + lead)',
+        '*Pad 1 (new age)', '*Pad 2 (warm)', 'Pad 3 (polysynth)', 'Pad 4 (choir)',
+        'Pad 5 (bowed)', 'Pad 6 (metallic)', 'Pad 7 (halo)', 'Pad 8 (sweep)',
+        'FX 1 (rain)', 'FX 2 (soundtrack)', 'FX 3 (crystal)', 'FX 4 (atmosphere)',
+        'FX 5 (brightness)', 'FX 6 (goblins)', 'FX 7 (echoes)', 'FX 8 (sci-fi)',
+        'Sitar', 'Banjo', 'Shamisen', 'Koto',
+        'Kalimba', 'Bag pipe', 'Fiddle', 'Shanai',
+        'Tinkle Bell', 'Agogo', 'Steel Drums', 'Woodblock',
+        'Taiko Drum', 'Melodic Tom', 'Synth Drum', 'Reverse Cymbal',
+        'Guitar Fret Noise', 'Breath Noise', 'Seashore', 'Bird Tweet',
+        'Telephone Ring', 'Helicopter', 'Applause', 'Gunshot'
+      ];
+         const drumNames = [   
+'x Chinese Bass Drum',
+'x Peking cymbals',
+'x Filter Snap',
+'x Slap Noise',
+'x Scratch Push',
+'x Scratch Pull',
+'x Drumsticks',
+'x Click noise',
+'Metronome Click',
+'Metronome Bell',
+'Acoustic Bass Drum',
+'Electric Bass Drum',
+'Side Stick',
+'Acoustic Snare',
+'Hand Clap',
+'Electric Snare',
+'Low Floor Tom',
+'Closed Hi-hat',
+'High Floor Tom',
+'Pedal Hi-hat',
+'Low Tom',
+'Open Hi-hat',
+'Low-Mid Tom',
+'High-Mid Tom',
+'Crash Cymbal 1',
+'High Tom',
+'Ride Cymbal 1',
+'Chinese Cymbal',
+'Ride Bell',
+'Tambourine',
+'Splash Cymbal',
+'Cowbell',
+'Crash Cymbal 2',
+'Vibraslap',
+'Ride Cymbal 2',
+'High Bongo',
+'Low Bongo',
+'Mute High Conga',
+'Open High Conga',
+'Low Conga',
+'High Timbale',
+'Low Timbale',
+'High Agogô',
+'Low Agogô',
+'Cabasa',
+'Maracas',
+'Short Whistle',
+'Long Whistle',
+'Short Guiro',
+'Long Guiro',
+'Claves',
+'High Woodblock',
+'Low Woodblock',
+'Mute Cuica',
+'Open Cuica',
+'Mute Triangle',
+'Open Triangle',
+'Shaker',
+'x Jingle bell',
+'x Bellchime',
+'x Castanets',
+'x Muted Surdo',
+'x Open Surdo',
+'x Tam-Tam 1',
+'x Tam-Tam 2'
+];
+
+      for (let i = 0; i < instrumentNames.length; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        if (i == 87) {
+          option.selected = true;
+        }
+        option.text = `${instrumentNames[i]}`;
+        instrumentSelect.appendChild(option);
+      }
+      
+      for (let d = 0; d < drumNames.length; d++) {
+        const option1 = document.createElement('option');
+        option1.value = d;
+        if (d == 13) {
+          option1.selected = true;
+        }
+        option1.text = `${drumNames[d]}`;        
+        drum1Select.appendChild(option1);
+
+        const option2 = document.createElement('option');
+        option2.value = d;
+        if (d == 16) {
+          option2.selected = true;
+        }
+        option2.text = `${drumNames[d]}`;        
+        drum2Select.appendChild(option2);
+
+        const option3 = document.createElement('option');
+        option3.value = d;
+        if (d == 17) {
+          option3.selected = true;
+        }
+        option3.text = `${drumNames[d]}`;        
+        drum3Select.appendChild(option3);
+
+      }
+
+
+    }
+
+
+    function updateOpts() {
+      const keySelect = document.getElementById('keySelect');
+      const selectedKey = keySelect.value;
+
+      // Update the scale based on the selected key
+      switch (selectedKey) {
+        case 'C':
+          scale = [60, 62, 64, 65, 67, 69, 71];
+          break;
+        case 'C#':
+          scale = [61, 63, 65, 66, 68, 70, 72];
+          break;
+        case 'D':
+          scale = [62, 64, 66, 67, 69, 71, 73];
+          break;
+        case 'D#':
+          scale = [63, 65, 67, 68, 70, 72, 74];
+          break;
+        case 'E':
+          scale = [64, 66, 68, 69, 71, 73, 75];
+          break;
+        case 'F':
+          scale = [65, 67, 69, 70, 72, 74, 76];
+          break;
+        case 'F#':
+          scale = [66, 68, 70, 71, 73, 75, 77];
+          break;
+        case 'G':
+          scale = [67, 69, 71, 72, 74, 76, 78];
+          break;
+        case 'G#':
+          scale = [68, 70, 72, 73, 75, 77, 79];
+          break;
+        case 'A':
+          scale = [69, 71, 73, 74, 76, 78, 80];
+          break;
+        case 'A#':
+          scale = [70, 72, 74, 75, 77, 79, 81];
+          break;
+        case 'B':
+          scale = [71, 73, 75, 76, 78, 80, 82];
+          break;
+        // Add cases for other keys as needed
+        default:
+          scale = []; // Set an empty scale if an invalid key is selected
+      }
+
+
+      const tempoInput = document.getElementById('tempoInput');
+       tempo = parseInt(tempoInput.value);
+       noteDuration = (60 / tempo) * 1000; // Duration of each note in milliseconds
+
+      const instrumentSelect = document.getElementById('instrumentSelect');
+       instrumentValue = parseInt(instrumentSelect.value);
+
+      const notesInput = document.getElementById('notesInput');
+      numNotes = parseInt(notesInput.value);
+
+      const harmonySelect = document.getElementById('harmonySelect');
+      harmonyValue = harmonySelect.value;
+
+      const octaveLSelect = document.getElementById('octaveLSelect');
+      octaveLValue = octaveLSelect.value;
+
+      const octaveHSelect = document.getElementById('octaveHSelect');
+      octaveHValue = octaveHSelect.value;
+
+      // fix out of order selection
+      if ( octaveHValue < octaveLValue) {
+        octaveHValue = octaveLValue;
+        octaveHSelect.value = octaveHValue;
+      }
+
+      drum1Select = document.getElementById('drum1Select');
+      drum1Value = parseInt(drum1Select.value);
+      
+      drum2Select = document.getElementById('drum2Select');
+      drum2Value = parseInt(drum2Select.value);
+
+      drum3Select = document.getElementById('drum3Select');
+      drum3Value = parseInt(drum3Select.value);
+
+      drum1beat= document.getElementById('drum1beat').value;
+      drum2beat= document.getElementById('drum2beat').value;
+      drum3beat= document.getElementById('drum3beat').value;
+    
+      if (drum1beat == "half") {
+        drum1beat = Math.floor (numNotes/2);
+      }
+      if (drum2beat == "half") {
+        drum2beat = Math.floor (numNotes/2);
+      }
+      if (drum3beat == "half") {
+        drum3beat = Math.floor (numNotes/2);
+      }
+
+      if (drum1beat == "end") {
+        drum1beat = numNotes;
+      }
+      if (drum2beat == "end") {
+        drum2beat = numNotes;
+      }
+      if (drum3beat == "end") {
+        drum3beat = numNotes;
+      }
+
+
+
+
+      const volumeInput = document.getElementById('volumeInput');
+      volume = parseInt(volumeInput.value);
+    }
+
+    function stop() {
+      stopped = true;
+    }
+
+    // Play the randomly generated notes 
+    function playNotes() {
+      stopped=false;
+      updateOpts();
+
+   
+     const status= document.getElementById('status');
+      noteDisplay.textContent = "";
+
+
+// generate seq
+    let seq = []; 
+    let seqOct = []; 
+      for (let s=0;s < numNotes; s++) {
+        seq[s]= getRandomNote();
+        seqOct[s]= getRandomOctave();        
+    }
+
+      if (navigator.requestMIDIAccess) {
+        navigator.requestMIDIAccess()
+          .then(function (midiAccess) {
+            const outputs = midiAccess.outputs;
+            const outputsIterator = outputs.values();
+            const firstOutput = outputsIterator.next().value;
+
+            if (!firstOutput) {
+              status.textContent = "No MIDI device was found";
+            } else {
+              status.textContent = "Successfully connected to midi device '"+firstOutput.name+"'";
+
+
+              // Generate and play random notes sequentially
+              playSequentialNotes(0);
+
+              function playSequentialNotes(index) {
+                if ( (index < seq.length) && (!stopped)) {
+                  // Set the selected instrument
+                  firstOutput.send([0xC0, instrumentValue]);
+            
+                  const noteIndex= seq[index];
+                  const oct =seqOct[index];
+                  note=scale[noteIndex];
+                  
+                  // move note to ocatve              
+                  note = note + (oct -4) * 12;
+
+		              const noteName = getNoteName(note);
+		              noteDisplay.textContent += noteName;
+
+                  harmonyNote = getHarmonyNote(noteIndex, harmonyValue);   
+                  hOct =1;
+                  if (harmonyValue <0) {
+                    hOct =-1;
+                  }
+                  // move harmony note to ocatve              
+                  harmonyNote  = harmonyNote + (oct-4+hOct) * 12;             
+                  const harmonyNoteName = getNoteName(harmonyNote);
+
+		              if (harmonyValue != 0) {
+                    noteDisplay.textContent +='/' + harmonyNoteName;
+		              } 
+                
+		              noteDisplay.textContent +=' ';
+                  
+                  firstOutput.send([0x90, note, volume]); // main Note on
+                  
+
+                  if (harmonyValue != 0) {
+                    firstOutput.send([0x90, harmonyNote, volume]); // Harmony note on
+                  }
+                  let drum1rem =0;
+                  let drum2rem =0;
+                  let drum3rem =0;
+                
+
+                  let drum1play = drum1beat;
+                  let drum2play = drum2beat;
+                  let drum3play = drum3beat;
+                  
+
+                  if (drum1beat == 3) {
+                    drum1rem =1;
+                    drum1play=2;
+                  } 
+                  if (drum2beat == 3) {
+                    drum2rem =1;
+                    drum2play=2;
+                  }
+                  if (drum3beat == 3) {
+                    drum3rem =1;
+                    drum3play=2;
+                  }
+                  
+                  // Set drum1
+                  if (drum1beat>0 && (index%drum1play==drum1rem)) {
+                    firstOutput.send([0x99, drum1Value+25, volume]); // drum1 on
+                  }
+
+                  // Set drum2
+                  if (drum2beat>0 && (index%drum2play==drum2rem)) {
+                    firstOutput.send([0x99, drum2Value+25, volume]); // drum2 on
+                  }
+                  
+                  // Set drum3
+                  if (drum3beat>0 && (index%drum3play==drum3rem)) {
+                    firstOutput.send([0x99, drum3Value+25, volume]); // drum3 on
+                  }
+
+                  setTimeout(function () {
+                    firstOutput.send([0x80, note, 0x00]); // main Note off
+		                if (harmonyValue!=0) {
+                      firstOutput.send([0x80, harmonyNote, 0x00]); // Harmony note off
+                    }                  
+                    if (drum1beat>0) {
+                      firstOutput.send([0x89, drum1Value+25, 0x00]); // drum1 off
+                    }
+                    if (drum2beat>0) {
+                      firstOutput.send([0x89, drum2Value+25, 0x00]); // drum2 off
+                    }
+                    if (drum3beat>0) {
+                      firstOutput.send([0x89, drum3Value+25, 0x00]); // drum3 off
+                    }
+
+                    playSequentialNotes(index + 1);
+                  }, noteDuration);
+                } else {
+                  status.textContent = "Done playing sequence.";
+                  if (!stopped) {
+                    status.textContent += " Restarting sequence.";
+                    noteDisplay.textContent =' ';
+                    playSequentialNotes(0);
+                  }
+                }
+              }
+            }
+          })
+          .catch(function (error) {
+            status.textContent = 'Error: ' + error;
+          });
+      } else {
+       status.textContent = 'Web MIDI API is not supported in this browser';
+      }
+    }
+
+    // Populate the instrument options on page load
+    window.addEventListener('load', populateInstrumentOptions);
+
+    // Get the name of a MIDI note
+    function getNoteName(note) {
+      const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+      const octave = Math.floor(note / 12) - 1;
+      const noteName = noteNames[note % 12];
+      return noteName + octave;
+    }
+
+	</script>
+</body>
+
+</html>
