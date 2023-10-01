@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 
@@ -12,6 +13,8 @@
 
 <body>
 
+  <fieldset>
+    <legend><b>Main</b></legend>
 	<label for="tempoInput">Tempo (BPM):</label>
 	<input type="number" id="tempoInput" min="1" value="240" onchange="updateOpts()"><br>
 	<label for="notesInput">Number of Notes:</label>
@@ -62,14 +65,17 @@
     <option selected value="5">5</option>
   </select>
 	<br>
-
-
+<br>
 	<label for="instrumentSelect">Main instrument:</label>
 	<select id="instrumentSelect" onchange="updateOpts()"></select><br>
+  				<br>
+				<label for="volumeInput">Main volume:</label>
+				<input type="range" id="volumeInput" min="1" max="127" value="63" onchange="updateOpts()"><br>
+  </fieldset>
 	<br>
-
-
-	<font color=##FF0000><label for="harmonySelect">Add relative note:</label>
+<fieldset>
+<legend><b>Added notes</b></legend>
+	<font color=##FF0000><label for="harmonySelect">Relative note:</label>
 		<select id="harmonySelect" onchange="updateOpts()">
     <option value="0">None</option>
     <option value="1">+1</option>
@@ -88,37 +94,66 @@
     <option value="-7">-7 (octave)</option>
   </select>
 		<label for="HinstrumentSelect">Instrument:</label>
-		<select id="HinstrumentSelect" onchange="updateOpts()"></select><br>
+		<select id="HinstrumentSelect" onchange="updateOpts()"></select>
 		<br></font>
 
 
-		<font color=#0000FF><label for="droneSelect">Add static note:</label>
+		<font color=#0000FF><label for="droneSelect">Static note:</label>
 			<select id="droneSelect" onchange="updateOpts()">
-    <option value="-1">None</option>
-    <option value="0">root 
-    <option value="5">minor
-  </select>
+      <option value="-1">None</option>
+      <option value="0">root</option>
+      <option value="5">minor</option>
+    </select>
+
 			<label for="DinstrumentSelect">Instrument:</label>
-			<select id="DinstrumentSelect" onchange="updateOpts()"></select><br>
-			<br></font>
+			<select id="DinstrumentSelect" onchange="updateOpts()">
+    </select>
+
+			<label for="droneTypeSelect">Note type:</label>
+			<select id="droneTypeSelect" onchange="updateOpts()">
+      <option selected value="0">individual notes</option>
+      <option value="1">constant drone</option>
+    </select>
+			<br>
+    </font>
 
 			<font color=#A52A2A>
-				<label for="bassSelect">Add bass:</label>
+				<label for="bassSelect">Bass:</label>
 				<select id="bassSelect" onchange="updateOpts()">
-    <option value="0">None</option>
-    <option value="6">minor
-    <option value="1">major
-  </select>
-				<label for="BinstrumentSelect">Instrument:</label>
-				<select id="BinstrumentSelect" onchange="updateOpts()"></select><br>
-				<br></font>
-				<br>
+      <option value="0">None</option>
+      <option value="6">minor</option>
+      <option value="1">major</option>
+    </select>
 
+				<label for="BinstrumentSelect">Instrument:</label>
+				<select id="BinstrumentSelect" onchange="updateOpts()">
+    </select>
+		</font>
+    <br>
+    				<label for="accSelect">Auto-accompaniment:</label>
+				<select id="accSelect" onchange="updateOpts()">
+              <option value="-1">None</option>
+              <option value="0">same note as what human plays</option>
+              <option value="99">root note (unchanging)</option>
+              <option value="5">relative minor note (unchanging)</option>
+              <option value="12">+1 octave</option>
+              <option value="-12">-1 octave</option>
+          </select>
+				<label for="accInstrumentSelect">Instrument:</label>
+				<select id="accInstrumentSelect" onchange="updateOpts()">
+        </select>
+				<label for="AvolumeInput">Volume:</label>
+				<input type="range" id="AvolumeInput" min="1" max="127" value="63" onchange="updateOpts()">
+</fieldset>
+<br>
+<fieldset>
+  <legend><b>Drums</b></legend>
 				<label for="drum1Select">Drum 1:</label>
 				<select id="drum1Select" onchange="updateOpts()"></select>
 				<label for="drum1beat">beat:</label>
 				<select id="drum1beat" onchange="updateOpts()">
     <option value="0">None</option>
+    <option value="99">Random</option>
     <option value="1">every beat</option>
     <option value="2">even beats</option>
     <option value="3">odd beats</option>
@@ -132,6 +167,7 @@
 				<label for="drum2beat">beat:</label>
 				<select id="drum2beat" onchange="updateOpts()">
     <option value="0">None</option>
+    <option value="99">Random</option>
     <option value="1">every beat</option>
     <option selected value="2">even beats</option>
     <option value="3">odd beats</option>
@@ -146,6 +182,7 @@
 				<label for="drum3beat">beat:</label>
 				<select id="drum3beat" onchange="updateOpts()">
     <option value="0">None</option>
+    <option value="99">Random</option>
     <option selected value="1">every beat</option>
     <option value="2">even beats</option>
     <option value="3">odd beats</option>
@@ -159,25 +196,50 @@
 				<label for="drum4beat">beat:</label>
 				<select id="drum4beat" onchange="updateOpts()">
     <option value="0">None</option>
+    <option value="99">Random</option>
     <option value="1">every beat</option>
     <option value="2">even beats</option>
     <option value="3">odd beats</option>
     <option value="4">every 4th beat</option>
         <option value="half">halfway through</option>
     <option value="end">at the end of the sequence</option>
-  </select><br>
+  </select>
+</fieldset>
+<br>
 
-				<br>
-				<label for="volumeInput">Volume:</label>
-				<input type="number" id="volumeInput" min="1" max="127" value="63" onchange="updateOpts()"><br>
 
+
+        <fieldset>
+          <legend><b>Effects</b></legend>
+				<label for="reverb">Reverb send level:</label>
+				<input type="range" id="reverb" min="0" max="127" step="1" value="64" onchange="updateOpts()">
 				<br>
+				<label for="chorus">Chorus Depth:</label>
+				<input type="range" id="chorus" min="0" max="127" step="1" value="64"  onchange="updateOpts()">
+				</fieldset>
+        <br>
+				<fieldset>
+        <legend><b>Sequence</b></legend>
 				<button id="playButton" onclick="playNotes()">Play</button>
 				<button id="stopButton" onclick="stop()">Stop</button>
-				<br>
-				<h2 id="noteDisplay"></h2>
-				<hr>
+        <h2 id="noteDisplay"></h2>
+        </fieldset>
+        <br>
+				<fieldset>
+        <legend><b>Loop</b></legend>        
+<button id="startRecordingButton" onclick="startRecording()">Record what I play</button>
+<button id="playbackButton"onclick="playback()">Play back what I recorded</button>
+<button id="stopPlaybackButton"onclick="stopPlayback()">Stop playback</button>
+				
+        <label for="UInstrumentSelect">Instrument:</label>
+				<select id="UInstrumentSelect" onchange="updateOpts()">
+        </select>
+				<label for="UvolumeInput">Volume:</label>
+				<input type="range" id="UvolumeInput" min="1" max="127" value="63" onchange="updateOpts()">
 
+				<h3 id="liveDisplay"></h3>
+        </fieldset>
+				<hr>
 				<div id="status"></div>
 
 				<script>
@@ -189,13 +251,22 @@
     HinstrumentValue = 0;
     DinstrumentValue = 0;
     BinstrumentValue = 0;
+    accInstrumentValue = 0;
+    UInstrumentValue = 0;
     numNotes = 0;
     harmonyValue =0;
     droneValue =0;
+    droneType =0;
     bassValue =0;
+    accValue =0;
     octaveLValue =0;
     octaveHValue =0;
     volume=0;
+    Avolume=0;
+    Uvolume=0;
+
+    chorusFilterValue=0;
+    reverbFilterValue=0;
        
     let drumBeat  = []; 
     let drumValue  = []; 
@@ -206,6 +277,45 @@
 
     let stopped=false;
     let doubleNotes=0;
+
+    var midiInput;
+    var midiOutput;
+
+    let recording = false;
+    let recordWaiting = false;
+    let playingBack= false;
+    let recordedMidiEvents = [];
+    let recordStartTime;
+
+  let midiMessages = [];  // store all midis here, for saving
+
+
+// functions for buttons for recording and playing back user keyboard
+function startRecording() {
+  recording = false;
+  playingBack= false;
+  recordWaiting = true;
+  document.getElementById('startRecordingButton').innerText="Waiting for user notes...";
+  document.getElementById('startRecordingButton').style.backgroundColor = "LightPink";
+
+}
+
+function playback() {
+  recording = false;
+  recordWaiting = false;
+  document.getElementById('startRecordingButton').innerText="Record what I play";
+  document.getElementById('startRecordingButton').style.backgroundColor = "";
+  playingBack= true;
+  document.getElementById('playbackButton').innerText="Playing recorded user notes...";
+  document.getElementById('playbackButton').style.backgroundColor = "LightBlue";
+  liveDisplay.innerHTML = "I played back note: "
+}
+function stopPlayback() {
+  playingBack= false;
+  document.getElementById('playbackButton').innerText="Play back what I recorded";
+  document.getElementById('playbackButton').style.backgroundColor = "";
+}
+
 
     // Get a random note from the scale
     function getRandomNote() {
@@ -221,8 +331,8 @@
     }
 
     // Get the harmony note for a given interval
-    function getHarmonyNote(noteIndex, interval) {
-	    let h=Number(noteIndex) + Number(interval);
+    function getHarmonyNote(noteInScale, interval) {
+	    let h=Number(noteInScale) + Number(interval);
 	    if (h>=scale.length) {
         h -= scale.length;
       }
@@ -233,8 +343,8 @@
     }
 
     // Get the drone note in current key
-    function getDroneNote(noteIndex) {
-	    let h=Number(noteIndex);
+    function getDroneNote(noteInScale) {
+	    let h=Number(noteInScale);
       return scale[h];	  
     }
 
@@ -262,6 +372,8 @@
       const HinstrumentSelect = document.getElementById('HinstrumentSelect');
       const DinstrumentSelect = document.getElementById('DinstrumentSelect');
       const BinstrumentSelect = document.getElementById('BinstrumentSelect');
+      const accInstrumentSelect = document.getElementById('accInstrumentSelect');
+      const UInstrumentSelect = document.getElementById('UInstrumentSelect');
 
       // General MIDI (GM) instrument names
       const instrumentNames = [
@@ -273,8 +385,8 @@
         'Reed Organ', 'Accordion', 'Harmonica', 'Tango Accordion',
         'Acoustic Guitar (nylon)', 'Acoustic Guitar (steel)', 'Electric Guitar (jazz)', 'Electric Guitar (clean)',
         '*Electric Guitar (muted)', 'Overdriven Guitar', 'Distortion Guitar', 'Guitar Harmonics',
-        'Acoustic Bass', 'Electric Bass (finger)', 'Electric Bass (pick)', 'Fretless Bass',
-        'Slap Bass 1', 'Slap Bass 2', 'Synth Bass 1', 'Synth Bass 2',
+        'b-Acoustic Bass', 'Electric Bass (finger)', 'b-Electric Bass (pick)', 'b-Fretless Bass',
+        'Slap Bass 1', 'Slap Bass 2', 'Synth Bass 1', 'b-Synth Bass 2',
         'Violin', 'Viola', 'Cello', 'Contrabass',
         'Tremolo Strings', '*Pizzicato Strings', 'Orchestral Harp', 'Timpani',
         '*String Ensemble 1', '*String Ensemble 2', '*Synth Strings 1', '*Synth Strings 2',
@@ -288,9 +400,9 @@
         '*Lead 1 (square)', 'Lead 2 (sawtooth)', 'Lead 3 (calliope)', 'Lead 4 (chiff)',
         'Lead 5 (charang)', 'Lead 6 (voice)', 'Lead 7 (fifths)', '*Lead 8 (bass + lead)',
         '*Pad 1 (new age)', '*Pad 2 (warm)', 'Pad 3 (polysynth)', 'Pad 4 (choir)',
-        'Pad 5 (bowed)', 'Pad 6 (metallic)', 'Pad 7 (halo)', 'Pad 8 (sweep)',
-        'FX 1 (rain)', 'FX 2 (soundtrack)', 'FX 3 (crystal)', 'FX 4 (atmosphere)',
-        'FX 5 (brightness)', 'FX 6 (goblins)', 'FX 7 (echoes)', 'FX 8 (sci-fi)',
+        'Pad 5 (bowed)', '*Pad 6 (metallic)', '*Pad 7 (halo)', 'Pad 8 (sweep)',
+        '*FX 1 (rain)', '*FX 2 (soundtrack)', '*FX 3 (crystal)', '*FX 4 (atmosphere)',
+        '*FX 5 (brightness)', 'FX 6 (goblins)', '*FX 7 (echoes)', '*FX 8 (sci-fi)',
         'Sitar', 'Banjo', 'Shamisen', 'Koto',
         'Kalimba', 'Bag pipe', 'Fiddle', 'Shanai',
         'Tinkle Bell', 'Agogo', 'Steel Drums', 'Woodblock',
@@ -367,6 +479,7 @@
 ];
       // MIDI instruments dropdown
       for (let i = 0; i < instrumentNames.length; i++) {
+        // main instrument
         const option = document.createElement('option');
         option.value = i;
         if (i == 87) {
@@ -375,31 +488,50 @@
         option.text = `${instrumentNames[i]}`;
         instrumentSelect.appendChild(option);
 
+        // harmony instrumnt
         const Hoption = document.createElement('option');
         Hoption.value = i;
-        if (i == 87) {
+        if (i == 87) { // set default
           Hoption.selected = true;
         }
         Hoption.text = `${instrumentNames[i]}`;
         HinstrumentSelect.appendChild(Hoption);
         
+        // drone instrumnt
         const Doption = document.createElement('option');
         Doption.value = i;
-        if (i == 87) {
+        if (i == 87) { // set default
           Doption.selected = true;
         }
         Doption.text = `${instrumentNames[i]}`;
         DinstrumentSelect.appendChild(Doption);
         
+        // bass instrumnt
         const Boption = document.createElement('option');
         Boption.value = i;
-        if (i == 87) {
+        if (i == 39) { // set default
           Boption.selected = true;
         }
         Boption.text = `${instrumentNames[i]}`;
         BinstrumentSelect.appendChild(Boption);
 
+        // auto-accompany instument
+        const Aoption = document.createElement('option');
+        Aoption.value = i;
+        if (i == 48) {
+          Aoption.selected = true;
+        }
+        Aoption.text = `${instrumentNames[i]}`;
+        accInstrumentSelect.appendChild(Aoption);
 
+        // user-notes-playback instument
+        const Uoption = document.createElement('option');
+        Uoption.value = i;
+        if (i == 48) {
+          Uoption.selected = true;
+        }
+        Uoption.text = `${instrumentNames[i]}`;
+        UInstrumentSelect.appendChild(Uoption);
 
       }
       
@@ -448,7 +580,17 @@
     }
 
 
+     
+
+
     function updateOpts() {
+
+      // filers / effects
+      chorusFilterValue = parseInt(document.getElementById('chorus').value, 10);
+      reverbFilterValue = parseInt(document.getElementById('reverb').value, 10);
+
+
+
       const keySelect = document.getElementById('keySelect');
       const selectedKey = keySelect.value;
 
@@ -503,6 +645,7 @@
       const doubleNotesSelect = document.getElementById('doubleNotesSelect');
       doubleNotes = parseInt(doubleNotesSelect.value);
 
+      // get midi voice selections
       const instrumentSelect = document.getElementById('instrumentSelect');
       instrumentValue = parseInt(instrumentSelect.value);
 
@@ -515,14 +658,28 @@
       const BinstrumentSelect = document.getElementById('BinstrumentSelect');
       BinstrumentValue = parseInt(BinstrumentSelect.value);
 
+      const accInstrumentSelect = document.getElementById('accInstrumentSelect');
+      accInstrumentValue = parseInt(accInstrumentSelect.value);
+
+      const UInstrumentSelect = document.getElementById('UInstrumentSelect');
+      UInstrumentValue = parseInt(UInstrumentSelect.value);
+
+
       const notesInput = document.getElementById('notesInput');
       numNotes = parseInt(notesInput.value);
 
       const harmonySelect = document.getElementById('harmonySelect');
       harmonyValue = harmonySelect.value;
 
+      const accSelect = document.getElementById('accSelect');
+      accValue = accSelect.value;
+
       const droneSelect = document.getElementById('droneSelect');
       droneValue = droneSelect.value;
+
+      const droneTypeSelect = document.getElementById('droneTypeSelect');
+      droneType = droneTypeSelect.value;
+
 
       const bassSelect = document.getElementById('bassSelect');
       bassValue = bassSelect.value;
@@ -571,11 +728,41 @@
 
       const volumeInput = document.getElementById('volumeInput');
       volume = parseInt(volumeInput.value);
+
+      const AvolumeInput = document.getElementById('AvolumeInput');
+      Avolume = parseInt(AvolumeInput.value);
+  
+      const UvolumeInput = document.getElementById('UvolumeInput');
+      Uvolume = parseInt(UvolumeInput.value);
+
     }
 
     function stop() {
       stopped = true;
     }
+
+    // play back the notes that user played/recorded, on its own channel
+    function playRecordedMidi() {
+
+    
+      sendStoreMIDI([0xC5, UInstrumentValue]); // Set instrument
+          
+      recordedMidiEvents.forEach(event => {
+          setTimeout(() => {
+              //sendStoreMIDI(event.data);
+              // Note on?
+              if (event.data[0] >= 0x90 && event.data[0] <= 0x9F && event.data[2] > 0) {   
+                liveDisplay.innerHTML += getNoteName(event.data[1]) + " ";              
+                sendStoreMIDI([0x95, event.data[1], Uvolume]); // put note on
+              } else if ((event.data[0] >= 0x80 && event.data[0] <= 0x8F) || (event.data[0] >= 0x90 && event.data[0] <= 0x9F && event.data[2] == 0)) { // if note off
+                sendStoreMIDI([0x85, event.data[1], 0x00]); // note off
+              }
+          }, event.timestamp);
+      });
+}
+
+
+
 
     // Play the randomly generated notes 
     function playNotes() {
@@ -606,28 +793,51 @@
       if (navigator.requestMIDIAccess) {
         navigator.requestMIDIAccess()
           .then(function (midiAccess) {
-            const outputs = midiAccess.outputs;
-            const outputsIterator = outputs.values();
-            const firstOutput = outputsIterator.next().value;
+            midiOutput = midiAccess.outputs.values().next().value;
 
-            if (!firstOutput) {
+            if (!midiOutput) {
               status.innerHTML = "No MIDI device was found";
             } else {
-              status.innerHTML = "Successfully connected to midi device '"+firstOutput.name+"'";
+              status.innerHTML = "Successfully connected to midi device '"+midiOutput
+              .name+"'";
 
+            midiInput = midiAccess.inputs.values().next().value;
+            if (!midiInput) {
+              status.innerHTML = "No MIDI input device found";
+            } else {  
+              midiInput.onmidimessage = onMidiMessage;
+            }
 
               // play all instruments and drums
-              playSequentialNotes(0);
+              playSequence(0);
 
-              function playSequentialNotes(index) {
-                if ( (index < seq.length) && (!stopped)) {
+              function playSequence(current) {
+                if (current == 0) {
+                  // set base start time for recording, it's awlays rest to start of most recevtn loop
+                  recordStartTime = Date.now();
+
+                  if (playingBack) {                
+                    liveDisplay.innerHTML = "I played back note: ";
+                    playRecordedMidi(); // kick off all the notes previously recorded
+                  }
+
+                }
+
+                if ( (current < seq.length) && (!stopped)) {
+
+                  // set effect filter values              
+                  sendStoreMIDI([0xB0, 91, reverbFilterValue]);  // CC message
+                  sendStoreMIDI([0xB0, 93, chorusFilterValue]);  // CC message                
+
+
+
                   // Set the main instrument
-                  firstOutput.send([0xC0, instrumentValue]);
+                  sendStoreMIDI([0xC0, instrumentValue]);
             
                   ////// main note
-                  const noteIndex= seq[index];
-                  const oct =seqOct[index];
-                  note=scale[noteIndex];
+                  const noteInScale= seq[current];
+                  const oct =seqOct[current];
+                  note=scale[noteInScale];
                   
                   // move note to ocatve              
                   note = note + (oct -4) * 12;
@@ -636,7 +846,7 @@
 		              noteDisplay.innerHTML += noteName;
 
                   ////// relative/harmony note
-                  harmonyNote = getHarmonyNote(noteIndex, harmonyValue);   
+                  harmonyNote = getHarmonyNote(noteInScale, harmonyValue);   
                   hOct =1;
                   if (harmonyValue <0) {
                     hOct =-1;
@@ -663,7 +873,7 @@
                     noteDisplay.innerHTML +='/<font color=#0000FF>' + droneNoteName + '</font>';
 		              } 
                 
-                  ////// bass  note
+                  ////// bass note
                   bassNote = getBassNote();   
                   // move bass note to ocatve              
                   bassNote  = bassNote + (-2 * 12);    
@@ -675,25 +885,25 @@
 
 		              noteDisplay.innerHTML +=' ';
 
-                  if ( (doubleNotes==2) && (index%2==1)) {
-                      firstOutput.send([0x90, note, volume/2]); // main Note 1/2                      
+                  if ( (doubleNotes==2) && (current%2==1)) {
+                      sendStoreMIDI([0x90, note, volume/2]); // main Note 1/2                      
                   } else {
-                      firstOutput.send([0x90, note, volume]); // main Note on
+                      sendStoreMIDI([0x90, note, volume]); // main Note on
                   }
 
                   if (harmonyValue != 0) {
-                    firstOutput.send([0xC1, HinstrumentValue]); // Set instrument
-                    firstOutput.send([0x91, harmonyNote, volume]); // Harmony note on
+                    sendStoreMIDI([0xC1, HinstrumentValue]); // Set instrument
+                    sendStoreMIDI([0x91, harmonyNote, volume]); // Harmony note on
                   }
 
                   if (droneValue >= 0) {
-                    firstOutput.send([0xC2, DinstrumentValue]); // Set instrument
-                    firstOutput.send([0x92, droneNote, volume]); // drone note on
+                    sendStoreMIDI([0xC2, DinstrumentValue]); // Set instrument
+                    sendStoreMIDI([0x92, droneNote, volume]); // drone note on
                   }
 
                   if (bassValue != 0) {                    
-                    firstOutput.send([0xC3, BinstrumentValue]); // Set bass instrument
-                    firstOutput.send([0x93, bassNote, volume]); // bass note on
+                    sendStoreMIDI([0xC3, BinstrumentValue]); // Set bass instrument
+                    sendStoreMIDI([0x93, bassNote, volume]); // bass note on
                   }
 
                   ////// drum notes
@@ -701,43 +911,60 @@
                     drumRem =0;      
                     drumPlay = drumBeat[d];              
 
-                    if (drumBeat[d] == 3) {
+                    if (drumBeat[d] == 3) { // adjust for "odd beat" choice
                       drumRem =1;
                       drumPlay=2;
                     }                  
 
                     // Set drum
-                    if (drumBeat[d]>0 && (index%drumPlay==drumRem)) {
-                      firstOutput.send([0x99, drumValue[d]+25, volume]); // drum on
+                    if (drumBeat[d] ==99) { // random drum
+                      const randomBeat = Math.floor(Math.random() * seq.length/4);
+                      if (randomBeat ==1 ) {
+                        sendStoreMIDI([0x99, drumValue[d]+25, volume]); // drum on
+                      }
+                    } else {
+                      if (drumBeat[d]>0 && (current%drumPlay==drumRem)) {
+                        sendStoreMIDI([0x99, drumValue[d]+25, volume]); // drum on
+                      }
                     }
+
+
                   }
                   setTimeout(function () {
-                    firstOutput.send([0x80, note, 0x00]); // main Note off
+                    sendStoreMIDI([0x80, note, 0x00]); // main Note off
 		                if (harmonyValue!=0) {
-                      firstOutput.send([0x81, harmonyNote, 0x00]); // Harmony note off
+                      sendStoreMIDI([0x81, harmonyNote, 0x00]); // Harmony note off
                     }   
                     if (droneValue >=0) {
-                      firstOutput.send([0x82, droneNote, 0x00]); // drone note off
+                      if (droneType == 0) {
+                        sendStoreMIDI([0x82, droneNote, 0x00]); // drone note off
+                      }
                     }              
                     if (bassValue!=0) {
-                      firstOutput.send([0x83, bassNote, 0x00]); // bass note off
+                      sendStoreMIDI([0x83, bassNote, 0x00]); // bass note off
                     }   
                   
 
                   for (let d=0; d<numDrums; d++) {
                     if (drumBeat[d]>0) {
-                      firstOutput.send([0x89, drumValue[d]+25, 0x00]); // drum off
+                      sendStoreMIDI([0x89, drumValue[d]+25, 0x00]); // drum off
                     }
                   }
 
-                    playSequentialNotes(index + 1);
+                    playSequence(current + 1);
                   }, noteDuration);
                 } else {
-                  status.innerHTML = "Done playing sequence.";
+                  //status.innerHTML = "Done playing sequence.";
+                  // ok done a sequence, stop recording if i was
+                  if (recording) {
+                    recording = false;
+                    playback();  // switch to playing back
+                  }
                   if (!stopped) {
-                    status.innerHTML += " Restarting sequence.";
+                    //status.innerHTML += " Restarting sequence.";
                     noteDisplay.innerHTML =' ';
-                    playSequentialNotes(0);
+                    liveDisplay.innerHTML =' ';
+                    playSequence(0);
                   }
                 }
               }
@@ -761,6 +988,80 @@
       const noteName = noteNames[note % 12];
       return noteName + octave;
     }
+
+
+
+
+function onMidiMessage(event) { // when note is played on attached synth
+    
+    const notePlayed = event.data[1];
+    
+    if (recordWaiting) {
+      // a note was played, start recording
+      recordWaiting = false;
+      recording=true;
+
+      recordedMidiEvents = [];
+
+      document.getElementById('startRecordingButton').innerText="Recording user notes...";
+      document.getElementById('startRecordingButton').style.backgroundColor = "LightPink";
+      liveDisplay.innerHTML = "I recorded:";
+    }
+
+    if (recording) {
+      // save the note       
+      let currentTime = Date.now();
+      let timeFromStart = currentTime - recordStartTime;
+
+      recordedMidiEvents.push({ data: event.data, timestamp: timeFromStart });
+      // Note on?
+      if (event.data[0] >= 0x90 && event.data[0] <= 0x9F && event.data[2] > 0) {   
+        liveDisplay.innerHTML += getNoteName(notePlayed) + " ";
+      }
+    }
+
+
+    if (accValue != -1) { // play accompainment note
+      accNote =Number(notePlayed) + Number(accValue);
+
+      // special cases
+      if (accValue==5) {
+        accNote = getDroneNote(accValue);
+      }         
+      if (accValue==99) {
+        accNote = getDroneNote(0);
+      }
+
+      // Note on?
+      if (event.data[0] >= 0x90 && event.data[0] <= 0x9F && event.data[2] > 0) {     
+          // play accompainment note on its channel
+          sendStoreMIDI([0xC4, accInstrumentValue]); // Set accomp instrument
+          sendStoreMIDI([0x94, accNote, Avolume]); // acc note on
+          liveDisplay.innerHTML = "You played:" + getNoteName(notePlayed) + ", and I added:" +getNoteName(accNote);
+      }
+      // Note off OR Note on with velocity 0 (some keyboards use this as Note off)
+      else if ((event.data[0] >= 0x80 && event.data[0] <= 0x8F) || (event.data[0] >= 0x90 && event.data[0] <= 0x9F && event.data[2] == 0)) {
+              sendStoreMIDI([0x84, accNote, 0x00]); // acc note off
+      }
+    }
+}
+
+
+// Function to send MIDI messages and store them
+function sendStoreMIDI( message) {
+    midiOutput.send(message);
+    midiMessages.push({ time: performance.now(), data: message });
+}
+
+
+
+// Function to save stored MIDI messages to a .mid file
+function saveToFile() {
+
+}
+
+
+
 
 				</script>
 </body>
